@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Formulaire Cours</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2 th:text="${course.id} ? 'Éditer Cours' : 'Ajouter Cours'">Ajouter Cours</h2>
+        <form th:action="@{/admin/courses}" th:object="${course}" method="post">
+            <input type="hidden" th:field="*{id}" />
+            <div class="mb-3">
+                <label for="code" class="form-label">Code</label>
+                <input type="text" class="form-control" id="code" th:field="*{code}" required>
+            </div>
+            <div class="mb-3">
+                <label for="title" class="form-label">Titre</label>
+                <input type="text" class="form-control" id="title" th:field="*{title}" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="trainer" class="form-label">Formateur</label>
+                <select class="form-select" id="trainer" th:field="*{trainer}">
+                    <option value="" text="Sélectionner un formateur">Sélectionner un formateur</option>
+                    <option th:each="t : ${trainers}" th:value="${t.id}" th:text="${t.name}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="groups" class="form-label">Groupes assignés</label>
+                <select class="form-select" id="groups" th:field="*{groups}" multiple size="5">
+                    <option th:each="g : ${groups}" th:value="${g.id}" th:text="${g.name}">TP1</option>
+                </select>
+                <div class="form-text">Maintenez Ctrl (ou Cmd) pour sélectionner plusieurs groupes.</div>
+            </div>
+            <button type="submit" class="btn btn-success">Enregistrer</button>
+            <a href="/admin/courses" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+</body>
+
+</html>

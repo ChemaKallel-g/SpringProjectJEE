@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Mon Emploi du Temps</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FullCalendar CSS can be added if we want a calendar view, but let's stick to list/cards for now -->
+</head>
+
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4 shadow">
+        <div class="container">
+            <a class="navbar-brand" href="/">Training Center</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/timetable">Emploi du temps</a></li>
+                    <li class="nav-item">
+                        <form th:action="@{/logout}" method="post" class="d-inline">
+                            <button class="btn btn-link nav-link" type="submit">Déconnexion</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div th:if="${student}">
+            <div class="row align-items-center mb-4">
+                <div class="col">
+                    <h2>Bonjour, <span th:text="${student.firstName}">Jean</span></h2>
+                    <p class="text-muted">
+                        Groupe: <span class="badge bg-info" th:text="${student.group?.name} ?: 'Aucun'">TP1</span> |
+                        Spécialité: <span th:text="${student.group?.specialty?.name} ?: 'Aucune'">Info</span>
+                    </p>
+                </div>
+            </div>
+
+            <div th:if="${sessions != null and !sessions.empty}">
+                <h4 class="mb-3">Vos prochaines séances</h4>
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    <div class="col" th:each="s : ${sessions}">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary" th:text="${s.course.title}"> Cours </h5>
+                                <h6 class="card-subtitle mb-2 text-muted" th:text="${s.course.code}">Code</h6>
+                                <p class="card-text">
+                                    <i class="fas fa-calendar-day me-2"></i> <strong
+                                        th:text="${#temporals.format(s.startTime, 'EEEE dd MMMM yyyy')}">Date</strong><br>
+                                    <i class="fas fa-clock me-2"></i> <span
+                                        th:text="${#temporals.format(s.startTime, 'HH:mm')} + ' - ' + ${#temporals.format(s.endTime, 'HH:mm')}">Time</span><br>
+                                    <i class="fas fa-map-marker-alt me-2"></i> Salle: <span
+                                        th:text="${s.room}">B102</span>
+                                </p>
+                            </div>
+                            <div class="card-footer bg-transparent border-t-0 text-end">
+                                <small class="text-muted">Formateur: <span
+                                        th:text="${s.course.trainer?.name}">Nom</span></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${sessions == null or sessions.empty}" class="alert alert-info">
+                <span th:text="${message} ?: 'Aucune séance programmée.'"></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

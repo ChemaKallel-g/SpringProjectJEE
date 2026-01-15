@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Nouvelle Inscription</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2>Nouvelle Inscription</h2>
+        <form th:action="@{/admin/inscriptions}" th:object="${inscription}" method="post">
+            <div class="mb-3">
+                <label for="student" class="form-label">Étudiant</label>
+                <select class="form-select" id="student" th:field="*{student}" required>
+                    <option value="" text="Sélectionner un étudiant">Sélectionner un étudiant</option>
+                    <option th:each="s : ${students}" th:value="${s.id}"
+                        th:text="${s.firstName + ' ' + s.lastName + ' (' + s.registrationNumber + ')'}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="course" class="form-label">Cours</label>
+                <select class="form-select" id="course" th:field="*{course}" required>
+                    <option value="" text="Sélectionner un cours">Sélectionner un cours</option>
+                    <option th:each="c : ${courses}" th:value="${c.id}" th:text="${c.title}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="date" class="form-label">Date</label>
+                <input type="date" class="form-control" id="date" th:field="*{date}">
+            </div>
+            <button type="submit" class="btn btn-success">Enregistrer</button>
+            <a href="/admin/inscriptions" class="btn btn-secondary">Annuler</a>
+        </form>
+    </div>
+</body>
+
+</html>

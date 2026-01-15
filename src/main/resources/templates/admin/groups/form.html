@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Formulaire Groupe</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0" th:text="${group.id} ? 'Éditer Groupe' : 'Nouveau Groupe'">Groupe</h3>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/admin/groups}" th:object="${group}" method="post">
+                            <input type="hidden" th:field="*{id}" />
+
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nom du groupe</label>
+                                <input type="text" class="form-control" id="name" th:field="*{name}" required
+                                    placeholder="ex: TP1 Info">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="specialty" class="form-label">Spécialité</label>
+                                <select class="form-select" id="specialty" th:field="*{specialty}">
+                                    <option value="">Choisir une spécialité...</option>
+                                    <option th:each="spec : ${specialties}" th:value="${spec.id}"
+                                        th:text="${spec.name}">Informatique</option>
+                                </select>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-success">Enregistrer</button>
+                                <a href="/admin/groups" class="btn btn-secondary">Annuler</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
