@@ -103,112 +103,123 @@
         </div>
     </nav>
 
-    <div class="container-fluid px-4">
-        <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2 class="fw-bold text-dark">Tableau de Bord</h2>
-                <p class="text-muted">Aperçu général de votre établissement</p>
-            </div>
-            <div>
-                <a href="#" class="btn btn-primary shadow-sm"><i class="fas fa-download me-2"></i>Télécharger
-                    Rapport</a>
-            </div>
-        </div>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-        <!-- Stats Row -->
-        <div class="row g-4 mb-4">
-            <!-- Students -->
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon bg-gradient-primary">
-                        <i class="fas fa-user-graduate"></i>
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="mt-4">
+                    <!-- Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h2 class="fw-bold text-dark">Tableau de Bord</h2>
+                            <p class="text-muted">Aperçu général de votre établissement</p>
+                        </div>
+                        <div>
+                            <a href="#" class="btn btn-primary shadow-sm"><i
+                                    class="fas fa-download me-2"></i>Télécharger
+                                Rapport</a>
+                        </div>
                     </div>
-                    <h6 class="text-muted text-uppercase mb-1">Étudiants</h6>
-                    <h3 class="fw-bold mb-3" th:text="${studentCount}">0</h3>
-                    <a href="/admin/students" class="btn btn-sm btn-outline-primary w-100">Gérer</a>
-                </div>
-            </div>
-            <!-- Trainers -->
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon bg-gradient-success">
-                        <i class="fas fa-chalkboard-teacher"></i>
-                    </div>
-                    <h6 class="text-muted text-uppercase mb-1">Formateurs</h6>
-                    <h3 class="fw-bold mb-3" th:text="${trainerCount}">0</h3>
-                    <a href="/admin/trainers" class="btn btn-sm btn-outline-success w-100">Gérer</a>
-                </div>
-            </div>
-            <!-- Courses -->
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon bg-gradient-warning">
-                        <i class="fas fa-book-open"></i>
-                    </div>
-                    <h6 class="text-muted text-uppercase mb-1">Cours</h6>
-                    <h3 class="fw-bold mb-3" th:text="${courseCount}">0</h3>
-                    <a href="/admin/courses" class="btn btn-sm btn-outline-warning w-100">Gérer</a>
-                </div>
-            </div>
-            <!-- Inscriptions -->
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon bg-gradient-info">
-                        <i class="fas fa-file-signature"></i>
-                    </div>
-                    <h6 class="text-muted text-uppercase mb-1">Inscriptions</h6>
-                    <h3 class="fw-bold mb-3" th:text="${inscriptionCount}">0</h3>
-                    <a href="/admin/inscriptions" class="btn btn-sm btn-outline-info w-100">Gérer</a>
-                </div>
-            </div>
-            <!-- New Cards -->
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon bg-gradient-primary">
-                        <i class="fas fa-tags"></i>
-                    </div>
-                    <h6 class="text-muted text-uppercase mb-1">Spécialités</h6>
-                    <h3 class="fw-bold mb-3" th:text="${specialtyCount}">0</h3>
-                    <a href="/admin/specialties" class="btn btn-sm btn-outline-primary w-100">Gérer</a>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon bg-gradient-secondary">
-                        <i class="fas fa-calendar-alt"></i>
-                    </div>
-                    <h6 class="text-muted text-uppercase mb-1">Sessions</h6>
-                    <h3 class="fw-bold mb-3" th:text="${sessionCount}">0</h3>
-                    <a href="/admin/sessions" class="btn btn-sm btn-outline-secondary w-100">Gérer</a>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="stat-card">
-                    <div class="stat-icon bg-dark text-white">
-                        <i class="fas fa-users-cog"></i>
-                    </div>
-                    <h6 class="text-muted text-uppercase mb-1">Groupes</h6>
-                    <h3 class="fw-bold mb-3" th:text="${groupCount}">0</h3>
-                    <a href="/admin/groups" class="btn btn-sm btn-outline-dark w-100">Gérer</a>
-                </div>
-            </div>
-        </div>
 
-        <!-- Charts Row -->
-        <div class="row g-4">
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <h5 class="mb-4 fw-bold">Étudiants par Cours</h5>
-                    <canvas id="courseChart"></canvas>
+                    <!-- Stats Row -->
+                    <div class="row g-4 mb-4">
+                        <!-- Students -->
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon bg-gradient-primary">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <h6 class="text-muted text-uppercase mb-1">Étudiants</h6>
+                                <h3 class="fw-bold mb-3" th:text="${studentCount}">0</h3>
+                                <a href="/admin/students" class="btn btn-sm btn-outline-primary w-100">Gérer</a>
+                            </div>
+                        </div>
+                        <!-- Trainers -->
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon bg-gradient-success">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                </div>
+                                <h6 class="text-muted text-uppercase mb-1">Formateurs</h6>
+                                <h3 class="fw-bold mb-3" th:text="${trainerCount}">0</h3>
+                                <a href="/admin/trainers" class="btn btn-sm btn-outline-success w-100">Gérer</a>
+                            </div>
+                        </div>
+                        <!-- Courses -->
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon bg-gradient-warning">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                <h6 class="text-muted text-uppercase mb-1">Cours</h6>
+                                <h3 class="fw-bold mb-3" th:text="${courseCount}">0</h3>
+                                <a href="/admin/courses" class="btn btn-sm btn-outline-warning w-100">Gérer</a>
+                            </div>
+                        </div>
+                        <!-- Inscriptions -->
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon bg-gradient-info">
+                                    <i class="fas fa-file-signature"></i>
+                                </div>
+                                <h6 class="text-muted text-uppercase mb-1">Inscriptions</h6>
+                                <h3 class="fw-bold mb-3" th:text="${inscriptionCount}">0</h3>
+                                <a href="/admin/inscriptions" class="btn btn-sm btn-outline-info w-100">Gérer</a>
+                            </div>
+                        </div>
+                        <!-- New Cards -->
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon bg-gradient-primary">
+                                    <i class="fas fa-tags"></i>
+                                </div>
+                                <h6 class="text-muted text-uppercase mb-1">Spécialités</h6>
+                                <h3 class="fw-bold mb-3" th:text="${specialtyCount}">0</h3>
+                                <a href="/admin/specialties" class="btn btn-sm btn-outline-primary w-100">Gérer</a>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon bg-gradient-secondary">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </div>
+                                <h6 class="text-muted text-uppercase mb-1">Sessions</h6>
+                                <h3 class="fw-bold mb-3" th:text="${sessionCount}">0</h3>
+                                <a href="/admin/sessions" class="btn btn-sm btn-outline-secondary w-100">Gérer</a>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="stat-icon bg-dark text-white">
+                                    <i class="fas fa-users-cog"></i>
+                                </div>
+                                <h6 class="text-muted text-uppercase mb-1">Groupes</h6>
+                                <h3 class="fw-bold mb-3" th:text="${groupCount}">0</h3>
+                                <a href="/admin/groups" class="btn btn-sm btn-outline-dark w-100">Gérer</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Row -->
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <h5 class="mb-4 fw-bold">Étudiants par Cours</h5>
+                                <canvas id="courseChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="chart-container">
+                                <h5 class="mb-4 fw-bold">Répartition (Secteurs)</h5>
+                                <canvas id="pieChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <h5 class="mb-4 fw-bold">Répartition (Secteurs)</h5>
-                    <canvas id="pieChart"></canvas>
-                </div>
-            </div>
+            </main>
         </div>
     </div>
 

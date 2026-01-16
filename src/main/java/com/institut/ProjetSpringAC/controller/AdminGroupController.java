@@ -17,11 +17,14 @@ public class AdminGroupController {
 
     private final StudentGroupService groupService;
     private final SpecialtyService specialtyService;
+    private final com.institut.ProjetSpringAC.service.SessionService sessionService;
 
     @Autowired
-    public AdminGroupController(StudentGroupService groupService, SpecialtyService specialtyService) {
+    public AdminGroupController(StudentGroupService groupService, SpecialtyService specialtyService,
+            com.institut.ProjetSpringAC.service.SessionService sessionService) {
         this.groupService = groupService;
         this.specialtyService = specialtyService;
+        this.sessionService = sessionService;
     }
 
     @GetMapping
@@ -34,6 +37,7 @@ public class AdminGroupController {
     public String createGroupForm(Model model) {
         model.addAttribute("group", new StudentGroup());
         model.addAttribute("specialties", specialtyService.getAllSpecialties());
+        model.addAttribute("sessions", sessionService.getAllSessions());
         return "admin/groups/form";
     }
 
@@ -54,6 +58,7 @@ public class AdminGroupController {
         if (group.isPresent()) {
             model.addAttribute("group", group.get());
             model.addAttribute("specialties", specialtyService.getAllSpecialties());
+            model.addAttribute("sessions", sessionService.getAllSessions());
             return "admin/groups/form";
         } else {
             return "redirect:/admin/groups";

@@ -24,6 +24,10 @@ public class StudentGroup {
     @ManyToMany(mappedBy = "groups")
     private List<Course> courses;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "session_id")
+    private Session session;
+
     public StudentGroup() {
     }
 
@@ -70,5 +74,13 @@ public class StudentGroup {
 
     public void setCourses(List<Course> courses) {
         this.courses = courses;
+    }
+
+    public Session getSession() {
+        return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
     }
 }

@@ -7,73 +7,70 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/admin/dashboard">Admin Panel</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/students">Étudiants</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/trainers">Formateurs</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/admin/courses">Cours</a>
-                    </li>
-                </ul>
-            </div>
-            <form th:action="@{/logout}" method="post" class="d-flex">
-                <button class="btn btn-outline-light" type="submit">Déconnexion</button>
-            </form>
-        </div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 px-4">
+        <a class="navbar-brand fw-bold" href="/admin/dashboard">
+            <i class="fas fa-university me-2"></i>Training Center Admin
+        </a>
     </nav>
 
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>Liste des Cours</h2>
-            <a href="/admin/courses/new" class="btn btn-primary">Ajouter un cours</a>
-        </div>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-        <!-- Alerts -->
-        <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-            <span th:text="${successMessage}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
-            <span th:text="${errorMessage}"></span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2>Liste des Cours</h2>
+                        <a href="/admin/courses/new" class="btn btn-primary">Ajouter un cours</a>
+                    </div>
 
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Code</th>
-                    <th>Titre</th>
-                    <th>Description</th>
-                    <th>Formateur</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="course : ${courses}">
-                    <td th:text="${course.id}">1</td>
-                    <td th:text="${course.code}">CS101</td>
-                    <td th:text="${course.title}">Intro to Java</td>
-                    <td th:text="${course.description}">Basic Java concepts</td>
-                    <td th:text="${course.trainer?.name} ?: 'Non assigné'">Dr. Smith</td>
-                    <td>
-                        <a th:href="@{/admin/courses/edit/{id}(id=${course.id})}"
-                            class="btn btn-sm btn-warning">Éditer</a>
-                        <a th:href="@{/admin/courses/delete/{id}(id=${course.id})}" class="btn btn-sm btn-danger"
-                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ?');">Supprimer</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                    <!-- Alerts -->
+                    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                        <span th:text="${successMessage}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <span th:text="${errorMessage}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Code</th>
+                                <th>Titre</th>
+                                <th>Description</th>
+                                <th>Formateur</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="course : ${courses}">
+                                <td th:text="${course.id}">1</td>
+                                <td th:text="${course.code}">CS101</td>
+                                <td th:text="${course.title}">Intro to Java</td>
+                                <td th:text="${course.description}">Basic Java concepts</td>
+                                <td th:text="${course.trainer?.name} ?: 'Non assigné'">Dr. Smith</td>
+                                <td>
+                                    <a th:href="@{/admin/courses/edit/{id}(id=${course.id})}"
+                                        class="btn btn-sm btn-warning">Éditer</a>
+                                    <a th:href="@{/admin/courses/delete/{id}(id=${course.id})}"
+                                        class="btn btn-sm btn-danger"
+                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ?');">Supprimer</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
     </div>
-    </div>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
