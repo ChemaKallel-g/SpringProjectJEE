@@ -33,10 +33,21 @@ public class GradeService {
     }
 
     public Grade saveGrade(Grade grade) {
+        if (grade.getDate() == null) {
+            grade.setDate(java.time.LocalDate.now());
+        }
         return gradeRepository.save(grade);
     }
 
     public void deleteGrade(Long id) {
         gradeRepository.deleteById(id);
+    }
+
+    public List<Grade> getGradesByStudentId(Long studentId) {
+        return gradeRepository.findByStudentId(studentId);
+    }
+
+    public List<Grade> getGradesByCourseId(Long courseId) {
+        return gradeRepository.findByCourseId(courseId);
     }
 }

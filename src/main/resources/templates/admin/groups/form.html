@@ -2,76 +2,160 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Formulaire Groupe</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire Groupe | Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            --card-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+        }
+
+        .main-content {
+            padding: 3rem;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 30px;
+            box-shadow: var(--card-shadow);
+            border: none;
+            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .card-header-premium {
+            background: var(--primary-color);
+            padding: 2.5rem;
+            color: white;
+            text-align: center;
+        }
+
+        .form-container {
+            padding: 3rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            text-uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control,
+        .form-select {
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        }
+
+        .btn-submit {
+            background: var(--primary-color);
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background: #3f37c9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+    </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 px-4">
-        <a class="navbar-brand fw-bold" href="/admin/dashboard">
-            <i class="fas fa-university me-2"></i>Training Center Admin
-        </a>
-    </nav>
-
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
             <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-            <!-- Main Content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <div class="mt-4">
-                    <div class="row justify-content-center">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-header bg-primary text-white">
-                                    <h3 class="mb-0" th:text="${group.id} ? 'Éditer Groupe' : 'Nouveau Groupe'">Groupe
-                                    </h3>
-                                </div>
-                                <div class="card-body">
-                                    <form th:action="@{/admin/groups}" th:object="${group}" method="post">
-                                        <input type="hidden" th:field="*{id}" />
+            <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+                <div class="form-card">
+                    <div class="card-header-premium">
+                        <i class="fas fa-users-cog mb-3" style="font-size: 3rem; opacity: 0.8;"></i>
+                        <h2 class="mb-0 fw-bold" th:text="${group.id} ? 'Modifier le Groupe' : 'Nouveau Groupe'">Groupe
+                        </h2>
+                        <p class="opacity-75 mb-0"
+                            th:text="${group.id} ? 'Ajustez les paramètres de la promotion ' + ${group.name} : 'Créez une nouvelle structure de classe pour vos étudiants'">
+                        </p>
+                    </div>
 
-                                        <div class="mb-3">
-                                            <label for="name" class="form-label">Nom du groupe</label>
-                                            <input type="text" class="form-control" id="name" th:field="*{name}"
-                                                required placeholder="ex: TP1 Info">
-                                        </div>
+                    <div class="form-container">
+                        <form th:action="@{/admin/groups}" th:object="${group}" method="post">
+                            <input type="hidden" th:field="*{id}" />
 
-                                        <div class="mb-3">
-                                            <label for="specialty" class="form-label">Spécialité</label>
-                                            <select class="form-select" id="specialty" th:field="*{specialty}">
-                                                <option value="">Sélectionner une spécialité...</option>
-                                                <option th:each="s : ${specialties}" th:value="${s.id}"
-                                                    th:text="${s.name}">Informatique</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="session" class="form-label">Session (Semestre/Année)</label>
-                                            <select class="form-select" id="session" th:field="*{session}">
-                                                <option value="">Choisir une session...</option>
-                                                <option th:each="sess : ${sessions}" th:value="${sess.id}"
-                                                    th:text="${sess.name}">Session 2025</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="d-grid gap-2">
-                                            <button type="submit" class="btn btn-success">Enregistrer</button>
-                                            <a href="/admin/groups" class="btn btn-secondary">Annuler</a>
-                                        </div>
-                                    </form>
+                            <div class="mb-4">
+                                <label for="name" class="form-label">Nom de la section / groupe</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0"
+                                        style="border-radius: 12px 0 0 12px;">
+                                        <i class="fas fa-tag text-muted"></i>
+                                    </span>
+                                    <input type="text" class="form-control border-start-0" id="name" th:field="*{name}"
+                                        required placeholder="Ex: Master 1 - Informatique"
+                                        style="border-radius: 0 12px 12px 0;">
                                 </div>
                             </div>
-                        </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label for="specialty" class="form-label">Spécialité d'étude</label>
+                                    <select class="form-select" id="specialty" th:field="*{specialty}">
+                                        <option value="">Sélectionner une spécialité...</option>
+                                        <option th:each="s : ${specialties}" th:value="${s.id}" th:text="${s.name}">
+                                            Informatique</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="session" class="form-label">Session Académique</label>
+                                    <select class="form-select" id="session" th:field="*{session}">
+                                        <option value="">Choisir une session...</option>
+                                        <option th:each="sess : ${sessions}" th:value="${sess.id}"
+                                            th:text="${sess.name}">Session 2025</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mt-5 d-grid gap-3">
+                                <button type="submit" class="btn btn-primary btn-submit text-white shadow">
+                                    <i class="fas fa-save me-2"></i>Enregistrer le groupe
+                                </button>
+                                <a href="/admin/groups" class="btn btn-light rounded-pill py-2 text-muted fw-bold">
+                                    Annuler
+                                </a>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </main>
         </div>
     </div>
 
-    <!-- Font Awesome (for sidebar icons) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

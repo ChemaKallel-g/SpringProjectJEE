@@ -2,35 +2,203 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-    <title>Institut Formation - Accueil</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Institut Formation | Accueil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --accent-color: #4cc9f0;
+            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e2e8f0 100%);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+        }
+
+        .navbar-custom {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .hero-section {
+            padding: 6rem 0;
+            text-align: center;
+        }
+
+        .hero-title {
+            font-weight: 800;
+            font-size: 3.5rem;
+            color: #1a1c23;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #718096;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 25px;
+            padding: 2.5rem;
+            height: 100%;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+            text-align: left;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 35px rgba(67, 97, 238, 0.1);
+        }
+
+        .icon-box {
+            width: 60px;
+            height: 60px;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary-color);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-premium {
+            padding: 0.8rem 2rem;
+            border-radius: 15px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary-custom {
+            background: var(--primary-color);
+            border: none;
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            background: #3f37c9;
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.2);
+        }
+
+        .user-chip {
+            background: white;
+            padding: 0.5rem 1.25rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            display: inline-flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            color: #e63946;
+            background: none;
+            border: none;
+            font-weight: 600;
+            margin-left: 1rem;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container mt-5">
-        <h1>Bienvenue à l'Institut de Formation</h1>
-        <p>Gestion centrale des cours, étudiants et formateurs.</p>
+    <nav class="navbar navbar-custom">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <div class="bg-primary text-white rounded-3 p-1 me-2"
+                    style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-university small"></i>
+                </div>
+                <span class="fw-bold text-dark">TrainingCenter</span>
+            </a>
 
-        <div sec:authorize="isAnonymous()">
-            <a href="/login" class="btn btn-primary">Se connecter</a>
-            <a href="/register" class="btn btn-secondary">S'inscrire</a>
+            <div class="ms-auto d-flex align-items-center">
+                <div sec:authorize="isAnonymous()">
+                    <a href="/login" class="btn btn-link text-dark text-decoration-none fw-bold me-3">Connexion</a>
+                    <a href="/register" class="btn btn-primary-custom btn-premium">S'inscrire</a>
+                </div>
+
+                <div sec:authorize="isAuthenticated()" class="d-flex align-items-center">
+                    <div class="user-chip me-3">
+                        <i class="fas fa-user-circle me-2 text-primary"></i>
+                        <span sec:authentication="name" class="me-2">Utilisateur</span>
+                        <span class="badge bg-light text-primary border"
+                            sec:authentication="principal.authorities">Role</span>
+                    </div>
+                    <form th:action="@{/logout}" method="post" m-0>
+                        <button type="submit" class="logout-btn"><i class="fas fa-sign-out-alt"></i></button>
+                    </form>
+                </div>
+            </div>
         </div>
+    </nav>
 
-        <div sec:authorize="isAuthenticated()">
-            <p>Bonjour, <span sec:authentication="name">Utilisateur</span> !</p>
-            <p>Vous êtes connecté avec le rôle : <span sec:authentication="principal.authorities">Role</span></p>
+    <div class="container">
+        <section class="hero-section">
+            <h1 class="hero-title">L'Excellence Académique <br><span class="text-primary">à portée de main.</span></h1>
+            <p class="hero-subtitle">Gérez vos formations, planning et ressources au sein d'un environnement moderne et
+                intuitif dédié à la réussite.</p>
 
-            <div class="mt-3">
-                <a sec:authorize="hasRole('ADMIN')" href="/admin/dashboard" class="btn btn-warning">Tableau de bord
-                    Admin</a>
-                <!-- Add other role dashboards here if they exist -->
+            <div sec:authorize="isAnonymous()">
+                <a href="/login" class="btn btn-primary-custom btn-premium btn-lg me-3 shadow">Commencer maintenant</a>
+                <a href="/register" class="btn btn-outline-primary btn-premium btn-lg">Découvrir l'offre</a>
             </div>
 
-            <form th:action="@{/logout}" method="post" class="mt-3">
-                <button type="submit" class="btn btn-danger">Se déconnecter</button>
-            </form>
-        </div>
+            <div sec:authorize="isAuthenticated()" class="mt-4">
+                <a sec:authorize="hasRole('ADMIN')" href="/admin/dashboard"
+                    class="btn btn-primary-custom btn-premium btn-lg shadow">
+                    <i class="fas fa-chart-line me-2"></i>Accéder au Dashboard
+                </a>
+                <a sec:authorize="hasRole('STUDENT')" href="/timetable"
+                    class="btn btn-info btn-premium btn-lg text-white shadow">
+                    <i class="fas fa-calendar-alt me-2"></i>Mon Emploi du Temps
+                </a>
+            </div>
+        </section>
+
+        <section class="row mb-5 pb-5">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="icon-box"><i class="fas fa-calendar-check"></i></div>
+                    <h4 class="fw-bold">Planning Intelligent</h4>
+                    <p class="text-muted">Des emplois du temps dynamiques et sans conflits pour une organisation
+                        parfaite.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="icon-box"><i class="fas fa-user-graduate"></i></div>
+                    <h4 class="fw-bold">Suivi Personnalisé</h4>
+                    <p class="text-muted">Évaluation continue et gestion précise des parcours académiques de chaque
+                        étudiant.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="icon-box"><i class="fas fa-laptop-code"></i></div>
+                    <h4 class="fw-bold">Interface Moderne</h4>
+                    <p class="text-muted">Une expérience utilisateur premium conçue pour l'efficacité et la clarté.</p>
+                </div>
+            </div>
+        </section>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

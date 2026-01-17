@@ -15,18 +15,24 @@ public class CourseSession {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id", nullable = false)
+    private StudentGroup group;
+
     @Column(nullable = false)
     private LocalDateTime startTime;
 
     @Column(nullable = false)
     private LocalDateTime endTime;
 
-    private String room;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id", nullable = false)
+    private Room room;
 
     public CourseSession() {
     }
 
-    public CourseSession(Course course, LocalDateTime startTime, LocalDateTime endTime, String room) {
+    public CourseSession(Course course, LocalDateTime startTime, LocalDateTime endTime, Room room) {
         this.course = course;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -49,6 +55,14 @@ public class CourseSession {
         this.course = course;
     }
 
+    public StudentGroup getGroup() {
+        return group;
+    }
+
+    public void setGroup(StudentGroup group) {
+        this.group = group;
+    }
+
     public LocalDateTime getStartTime() {
         return startTime;
     }
@@ -65,11 +79,11 @@ public class CourseSession {
         this.endTime = endTime;
     }
 
-    public String getRoom() {
+    public Room getRoom() {
         return room;
     }
 
-    public void setRoom(String room) {
+    public void setRoom(Room room) {
         this.room = room;
     }
 }

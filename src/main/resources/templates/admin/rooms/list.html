@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Salles | Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+        }
+
+        .main-content {
+            padding: 2.5rem;
+        }
+
+        .page-header {
+            background: white;
+            padding: 1.5rem 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .data-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            border: none;
+            overflow: hidden;
+        }
+
+        .table thead {
+            background: #f8fafc;
+        }
+
+        .table thead th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            padding: 1.25rem 1.5rem;
+            border: none;
+        }
+
+        .table tbody td {
+            padding: 1.25rem 1.5rem;
+            vertical-align: middle;
+            color: #334155;
+            border-color: #f1f5f9;
+        }
+
+        .room-badge {
+            background: rgba(67, 97, 238, 0.1);
+            color: #4361ee;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .capacity-pill {
+            background: #f1f5f9;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .btn-action {
+            width: 35px;
+            height: 35px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+                <div class="page-header">
+                    <div>
+                        <h2 class="mb-0 fw-bold">Gestion des Salles</h2>
+                        <p class="text-muted mb-0 small">Gérez l'inventaire des ressources de l'établissement</p>
+                    </div>
+                    <a href="/admin/rooms/new" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                        <i class="fas fa-plus me-2"></i>Ajouter une salle
+                    </a>
+                </div>
+
+                <div th:if="${successMessage}"
+                    class="alert alert-success alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4"
+                    role="alert">
+                    <i class="fas fa-check-circle me-2"></i> <span th:text="${successMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <div class="data-card shadow-sm">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nom de la Salle</th>
+                                    <th>Capacité</th>
+                                    <th>Localisation</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="room : ${rooms}">
+                                    <td class="text-muted small" th:text="'#' + ${room.id}">#1</td>
+                                    <td>
+                                        <span class="room-badge" th:text="${room.name}">B102</span>
+                                    </td>
+                                    <td>
+                                        <span class="capacity-pill">
+                                            <i class="fas fa-users me-1 small"></i> <span
+                                                th:text="${room.capacity}">30</span> places
+                                        </span>
+                                    </td>
+                                    <td th:text="${room.location}">Bâtiment A, 1er étage</td>
+                                    <td class="text-end">
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <a th:href="@{/admin/rooms/edit/{id}(id=${room.id})}"
+                                                class="btn btn-light btn-action text-warning shadow-sm" title="Éditer">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a th:href="@{/admin/rooms/delete/{id}(id=${room.id})}"
+                                                class="btn btn-light btn-action text-danger shadow-sm" title="Supprimer"
+                                                onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette salle ?');">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(rooms)}">
+                                    <td colspan="5" class="text-center py-5 text-muted">
+                                        <i class="fas fa-door-open d-block mb-3 fs-1 opacity-25"></i>
+                                        Aucune salle trouvée. Commencer par en ajouter une.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

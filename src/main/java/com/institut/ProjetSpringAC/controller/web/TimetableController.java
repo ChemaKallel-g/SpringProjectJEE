@@ -1,9 +1,10 @@
-package com.institut.ProjetSpringAC.controller;
+package com.institut.ProjetSpringAC.controller.web;
 
 import com.institut.ProjetSpringAC.entity.Course;
 import com.institut.ProjetSpringAC.entity.CourseSession;
 import com.institut.ProjetSpringAC.entity.Student;
 import com.institut.ProjetSpringAC.entity.StudentGroup;
+import com.institut.ProjetSpringAC.entity.SessionStatus;
 import com.institut.ProjetSpringAC.repository.CourseSessionRepository;
 import com.institut.ProjetSpringAC.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class TimetableController {
@@ -31,20 +33,6 @@ public class TimetableController {
     public String viewTimetable(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
-
-        // Find student by username (which is email? or we need to look up
-        // CustomUserDetails)
-        // Assuming username corresponds to Student's email or identifier used in
-        // UserDetailService.
-        // My CustomUserDetailsService loads by username which matches Users table.
-        // I need to link Users to Student.
-        // Currently, 'Student' entity has 'email'. 'Users' entity has 'username'.
-        // Assuming they are same. or I need to find Student by Email = username.
-
-        // Wait, 'Student' entity doesn't have a direct link to 'Users' table explicitly
-        // in the entity model shown before?
-        // Let's check Student.java.
-        // If not, I'll search by email assuming username == email.
 
         Student student = studentRepository.findByEmail(username).orElse(null);
 
@@ -65,8 +53,29 @@ public class TimetableController {
             return "timetable";
         }
 
-        List<CourseSession> sessions = courseSessionRepository.findByCourseIn(courses);
-        model.addAttribute("sessions", sessions);
+        List<CourseSession> sessions = courseSessionRepository.findByGroupId(group.getId());
+
+        List<Map<String, Object>> sessionData = sessions.stream()
+                .filter(cs -> {
+                    com.institut.ProjetSpringAC.entity.Session academicSession = group.getSession();
+                    if (academicSession == null)
+                        return true;
+                    return academicSession.getStatus() != SessionStatus.PLANNED;
+                })
+                .map(s -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", s.getId());
+                    map.put("course", Map.of("title", s.getCourse().getTitle(),
+                            "trainer",
+                            s.getCourse().getTrainer() != null ? s.getCourse().getTrainer().getName() : "N/A"));
+                    map.put("startTime", s.getStartTime().toString());
+                    map.put("endTime", s.getEndTime().toString());
+                    map.put("room", s.getRoom() != null ? Map.of("name", s.getRoom().getName()) : null);
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+        model.addAttribute("sessions", sessionData);
         model.addAttribute("student", student);
 
         return "timetable";

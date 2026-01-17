@@ -1,4 +1,4 @@
-package com.institut.ProjetSpringAC.controller;
+package com.institut.ProjetSpringAC.controller.web;
 
 import com.institut.ProjetSpringAC.entity.Course;
 import com.institut.ProjetSpringAC.entity.Grade;
@@ -20,12 +20,15 @@ public class AdminGradeController {
     private final GradeService gradeService;
     private final StudentService studentService;
     private final CourseService courseService;
+    private final com.institut.ProjetSpringAC.service.SessionService sessionService;
 
     @Autowired
-    public AdminGradeController(GradeService gradeService, StudentService studentService, CourseService courseService) {
+    public AdminGradeController(GradeService gradeService, StudentService studentService, CourseService courseService,
+            com.institut.ProjetSpringAC.service.SessionService sessionService) {
         this.gradeService = gradeService;
         this.studentService = studentService;
         this.courseService = courseService;
+        this.sessionService = sessionService;
     }
 
     @GetMapping("/assign")
@@ -43,22 +46,25 @@ public class AdminGradeController {
                 newGrade.setCourse(course.get());
                 model.addAttribute("grade", newGrade);
             }
+            model.addAttribute("semesters", sessionService.getAllSemesters());
             return "admin/grades/form";
         }
         return "redirect:/admin/inscriptions";
     }
 
     @PostMapping
-    public String saveGrade(@ModelAttribute("grade") Grade grade) {
-        // Reload entities to ensure integrity if hidden fields are ID only
-        // But here we rely on binding. We might need to ensure student/course are set
-        // if they just come as IDs.
-        // Spring MVC binds nested objects by ID if they have a converter or if we
-        // passed them.
-        // To be safe, let's trust the binding for now or better, use Hidden inputs for
-        // student.id and course.id
-        // and let Spring JPA/Web resolve them ?
-        // Actually, simplest is to save.
+    public String saveGrade(@ModelAttribute("grade") Grade grade, @RequestParam("studentId") Long studentId,
+            @RequestParam("courseId") Long courseId,
+            @RequestParam(value = "sessionId", required = false) Long sessionId) {
+        Student student = studentService.getStudentById(studentId).orElseThrow();
+        Course course = courseService.getCourseById(courseId).orElseThrow();
+        grade.setStudent(student);
+        grade.setCourse(course);
+
+        if (sessionId != null) {
+            sessionService.getSessionById(sessionId).ifPresent(grade::setSession);
+        }
+
         gradeService.saveGrade(grade);
         return "redirect:/admin/inscriptions";
     }

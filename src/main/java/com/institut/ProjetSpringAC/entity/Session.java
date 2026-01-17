@@ -12,7 +12,7 @@ public class Session {
     private Long id;
 
     @Column(nullable = false)
-    private String name; // e.g., "Automne 2025"
+    private String name;
 
     @Column(nullable = false)
     @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -22,13 +22,41 @@ public class Session {
     @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SessionType type = SessionType.ACADEMIC_YEAR;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Session parent;
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Session> children = new java.util.ArrayList<>();
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SessionStatus status = SessionStatus.PLANNED;
+
     public Session() {
     }
 
-    public Session(String name, LocalDate startDate, LocalDate endDate) {
+    public Session(String name, LocalDate startDate, LocalDate endDate, SessionType type) {
         this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.type = type;
+        updateStatus();
+    }
+
+    public void updateStatus() {
+        LocalDate today = LocalDate.now();
+        if (today.isBefore(startDate)) {
+            this.status = SessionStatus.PLANNED;
+        } else if (today.isAfter(endDate)) {
+            this.status = SessionStatus.ARCHIVED;
+        } else {
+            this.status = SessionStatus.ACTIVE;
+        }
     }
 
     public Long getId() {
@@ -61,5 +89,37 @@ public class Session {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public SessionType getType() {
+        return type;
+    }
+
+    public void setType(SessionType type) {
+        this.type = type;
+    }
+
+    public Session getParent() {
+        return parent;
+    }
+
+    public void setParent(Session parent) {
+        this.parent = parent;
+    }
+
+    public java.util.List<Session> getChildren() {
+        return children;
+    }
+
+    public void setChildren(java.util.List<Session> children) {
+        this.children = children;
+    }
+
+    public SessionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(SessionStatus status) {
+        this.status = status;
     }
 }

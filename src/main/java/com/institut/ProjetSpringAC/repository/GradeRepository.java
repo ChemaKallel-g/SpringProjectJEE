@@ -8,4 +8,8 @@ import org.springframework.stereotype.Repository;
 public interface GradeRepository extends JpaRepository<Grade, Long> {
     Grade findByStudentAndCourse(com.institut.ProjetSpringAC.entity.Student student,
             com.institut.ProjetSpringAC.entity.Course course);
+
+    java.util.List<Grade> findByStudentId(Long studentId);
+
+    java.util.List<Grade> findByCourseId(Long courseId);
 }

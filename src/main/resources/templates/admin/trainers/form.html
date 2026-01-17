@@ -2,72 +2,171 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Formulaire Formateur</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire Formateur | Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            --card-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+        }
+
+        .main-content {
+            padding: 3rem;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 30px;
+            box-shadow: var(--card-shadow);
+            border: none;
+            overflow: hidden;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .card-header-premium {
+            background: var(--primary-color);
+            padding: 2.5rem;
+            color: white;
+            text-align: center;
+        }
+
+        .form-container {
+            padding: 3rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control,
+        .form-select {
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+        }
+
+        .btn-submit {
+            background: var(--primary-color);
+            border: none;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background: #3f37c9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+    </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 px-4">
-        <a class="navbar-brand fw-bold" href="/admin/dashboard">
-            <i class="fas fa-university me-2"></i>Training Center Admin
-        </a>
-    </nav>
-
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
             <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-            <!-- Main Content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <div class="mt-4">
-                    <div class="card mb-4">
-                        <div class="card-header bg-primary text-white">
-                            <h3 class="mb-0" th:text="${trainer.id} ? 'Éditer Formateur' : 'Ajouter Formateur'">Ajouter
-                                Formateur</h3>
-                        </div>
-                        <div class="card-body">
-                            <form th:action="@{/admin/trainers}" th:object="${trainer}" method="post">
-                                <input type="hidden" th:field="*{id}" />
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">Nom Complet</label>
-                                    <input type="text" class="form-control" id="name" th:field="*{name}" required>
+            <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+                <div class="form-card">
+                    <div class="card-header-premium">
+                        <i class="fas fa-user-tie mb-3" style="font-size: 3rem; opacity: 0.8;"></i>
+                        <h2 class="mb-0 fw-bold"
+                            th:text="${trainer.id} ? 'Modifier le Formateur' : 'Nouveau Formateur'">Formateur</h2>
+                        <p class="opacity-75 mb-0"
+                            th:text="${trainer.id} ? 'Mise à jour du profil de ' + ${trainer.name} : 'Enregistrez un nouvel intervenant dans l\'établissement'">
+                        </p>
+                    </div>
+
+                    <div class="form-container">
+                        <form th:action="@{/admin/trainers}" th:object="${trainer}" method="post">
+                            <input type="hidden" th:field="*{id}" />
+
+                            <div class="mb-4">
+                                <label for="name" class="form-label">Nom Complet</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 rounded-start-12">
+                                        <i class="fas fa-user text-muted"></i>
+                                    </span>
+                                    <input type="text" class="form-control border-start-0 rounded-end-12" id="name"
+                                        th:field="*{name}" required placeholder="Prénom et Nom">
                                 </div>
-                                <div class="mb-3">
-                                    <label for="specialty" class="form-label">Spécialité</label>
-                                    <!-- Use specialtyEntity for binding -->
-                                    <select class="form-select" id="specialty" th:field="*{specialtyEntity}">
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label for="specialty" class="form-label">Spécialité Principale</label>
+                                    <select class="form-select" id="specialty" name="specialtyId">
                                         <option value="">Sélectionner une spécialité</option>
-                                        <option th:each="s : ${specialties}" th:value="${s.id}" th:text="${s.name}">Java
+                                        <option th:each="s : ${specialties}" th:value="${s.id}"
+                                            th:selected="${trainer.specialtyEntity != null && s.id == trainer.specialtyEntity.id}"
+                                            th:text="${s.name}">Java
                                         </option>
                                     </select>
-                                    <!-- Keep hidden input for string compatibility if needed, but the controller handles it. 
-                     Actually, if validation requires 'specialty' string not null, we might have an issue if we don't set it in JS or remove validation.
-                     Trainer entity has @Column(nullable = false) private String specialty;
-                     If I submit the form, specialty string will be null.
-                     Solution: Make the string field nullable in Entity or set a default value in constructor, OR binding?
-                     Better: Controller sets it. But JPA validation runs before save? No, save calls repo.
-                     Actually, Spring MVC binding happens first. The object 'trainer' will have null 'specialty'.
-                     Then we call saveTrainer.
-                     If I save it, Hibernate might complain if I didn't set it.
-                     I set it in the controller. So it should be fine.
-                -->
                                 </div>
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email Professionnel</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0 rounded-start-12">
+                                            <i class="fas fa-envelope text-muted"></i>
+                                        </span>
+                                        <input type="email" class="form-control border-start-0 rounded-end-12"
+                                            id="email" th:field="*{email}" required placeholder="exemple@ecole.fr">
+                                    </div>
                                 </div>
-                                <button type="submit" class="btn btn-success">Enregistrer</button>
-                                <a href="/admin/trainers" class="btn btn-secondary">Annuler</a>
-                        </div>
+                            </div>
+
+                            <div class="mt-5 d-grid gap-3">
+                                <button type="submit" class="btn btn-primary btn-submit text-white shadow">
+                                    <i class="fas fa-save me-2"></i>Enregistrer le formateur
+                                </button>
+                                <a href="/admin/trainers" class="btn btn-light rounded-pill py-2 text-muted fw-bold">
+                                    Annuler
+                                </a>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </main>
         </div>
     </div>
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .rounded-start-12 {
+            border-radius: 12px 0 0 12px !important;
+        }
+
+        .rounded-end-12 {
+            border-radius: 0 12px 12px 0 !important;
+        }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

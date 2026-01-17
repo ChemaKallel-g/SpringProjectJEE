@@ -1,11 +1,13 @@
-package com.institut.ProjetSpringAC.controller;
+package com.institut.ProjetSpringAC.controller.web;
 
 import com.institut.ProjetSpringAC.entity.Student;
 import com.institut.ProjetSpringAC.service.StudentService;
+import com.institut.ProjetSpringAC.service.StudentGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
@@ -14,11 +16,11 @@ import java.util.Optional;
 public class AdminStudentController {
 
     private final StudentService studentService;
-    private final com.institut.ProjetSpringAC.service.StudentGroupService groupService;
+    private final StudentGroupService groupService;
 
     @Autowired
     public AdminStudentController(StudentService studentService,
-            com.institut.ProjetSpringAC.service.StudentGroupService groupService) {
+            StudentGroupService groupService) {
         this.studentService = studentService;
         this.groupService = groupService;
     }
@@ -37,8 +39,34 @@ public class AdminStudentController {
     }
 
     @PostMapping
-    public String saveStudent(@ModelAttribute("student") Student student) {
-        studentService.saveStudent(student);
+    public String saveStudent(@ModelAttribute("student") Student student,
+            @RequestParam(value = "groupId", required = false) Long groupId) {
+        if (student.getId() != null) {
+            // Modification : on charge l'existant pour ne pas perdre le 'user' ou les
+            // collections
+            studentService.getStudentById(student.getId()).ifPresent(existing -> {
+                existing.setFirstName(student.getFirstName());
+                existing.setLastName(student.getLastName());
+                existing.setEmail(student.getEmail());
+                existing.setRegistrationNumber(student.getRegistrationNumber());
+                existing.setRegistrationDate(student.getRegistrationDate());
+
+                if (groupId != null) {
+                    groupService.getGroupById(groupId).ifPresent(existing::setGroup);
+                } else {
+                    existing.setGroup(null);
+                }
+
+                // On garde l'ancien 'user', les inscriptions et les notes
+                studentService.saveStudent(existing);
+            });
+        } else {
+            // Création
+            if (groupId != null) {
+                groupService.getGroupById(groupId).ifPresent(student::setGroup);
+            }
+            studentService.saveStudent(student);
+        }
         return "redirect:/admin/students";
     }
 
@@ -55,8 +83,7 @@ public class AdminStudentController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteStudent(@PathVariable Long id,
-            org.springframework.web.servlet.mvc.support.RedirectAttributes redirectAttributes) {
+    public String deleteStudent(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             studentService.deleteStudent(id);
             redirectAttributes.addFlashAttribute("successMessage", "Étudiant supprimé avec succès.");

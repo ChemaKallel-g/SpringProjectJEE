@@ -27,6 +27,10 @@ public class Trainer {
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL)
     private List<Course> courses;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Trainer() {
     }
 
@@ -82,5 +86,13 @@ public class Trainer {
 
     public void setSpecialtyEntity(Specialty specialtyEntity) {
         this.specialtyEntity = specialtyEntity;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

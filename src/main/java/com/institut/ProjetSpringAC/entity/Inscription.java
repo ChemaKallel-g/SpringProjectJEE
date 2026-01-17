@@ -22,6 +22,10 @@ public class Inscription {
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private InscriptionStatus status = InscriptionStatus.PENDING;
+
     public Inscription() {
     }
 
@@ -61,5 +65,13 @@ public class Inscription {
 
     public void setCourse(Course course) {
         this.course = course;
+    }
+
+    public InscriptionStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(InscriptionStatus status) {
+        this.status = status;
     }
 }

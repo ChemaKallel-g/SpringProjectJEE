@@ -2,77 +2,200 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Gestion du Planning</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion du Planning | Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+        }
+
+        .main-content {
+            padding: 2rem;
+        }
+
+        .page-header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .calendar-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            border: none;
+        }
+
+        .fc-event {
+            border: none !important;
+            padding: 5px 10px !important;
+            border-radius: 10px !important;
+            cursor: pointer;
+            transition: all 0.25s ease !important;
+        }
+
+        .fc-event:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+            z-index: 100;
+        }
+
+        .fc-event-title {
+            font-weight: 700;
+        }
+
+        .event-details {
+            font-size: 0.75rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            margin-top: 2px;
+        }
+
+        .event-details i {
+            margin-right: 5px;
+            width: 12px;
+        }
+    </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 px-4">
-        <a class="navbar-brand fw-bold" href="/admin/dashboard">
-            <i class="fas fa-university me-2"></i>Training Center Admin
-        </a>
-    </nav>
-
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
             <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-            <!-- Main Content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <div class="mt-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h2>Planning des Cours</h2>
-                        <a href="/admin/planning/new" class="btn btn-primary">Planifier une séance</a>
+            <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+                <div class="page-header">
+                    <div>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-1">
+                                <li class="breadcrumb-item"><a href="/admin/groups"
+                                        class="text-decoration-none text-muted">Groupes</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Planning</li>
+                            </ol>
+                        </nav>
+                        <h2 class="mb-0 fw-bold">Planning : <span class="text-primary" th:text="${group.name}">Groupe
+                                A</span></h2>
                     </div>
+                    <a th:href="@{/admin/groups/{groupId}/planning/new(groupId=${group.id})}"
+                        class="btn btn-primary rounded-pill px-4 shadow-sm">
+                        <i class="fas fa-plus me-2"></i>Planifier une séance
+                    </a>
+                </div>
 
-                    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-                        <span th:text="${successMessage}"></span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <span th:text="${errorMessage}"></span>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+                <div th:if="${successMessage}"
+                    class="alert alert-success alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4"
+                    role="alert">
+                    <i class="fas fa-check-circle me-2"></i> <span th:text="${successMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
 
-                    <table class="table table-striped table-hover">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>ID</th>
-                                <th>Cours</th>
-                                <th>Salle</th>
-                                <th>Début</th>
-                                <th>Fin</th>
-                                <th>Formateur</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="s : ${sessions}">
-                                <td th:text="${s.id}">1</td>
-                                <td th:text="${s.course.title}">Java Basics</td>
-                                <td th:text="${s.room}">B102</td>
-                                <td th:text="${#temporals.format(s.startTime, 'dd/MM/yyyy HH:mm')}">01/01/2025 08:00
-                                </td>
-                                <td th:text="${#temporals.format(s.endTime, 'HH:mm')}">10:00</td>
-                                <td th:text="${s.course.trainer?.name ?: 'N/A'}">Dupont</td>
-                                <td>
-                                    <a th:href="@{/admin/planning/edit/{id}(id=${s.id})}"
-                                        class="btn btn-sm btn-warning">Éditer</a>
-                                    <a th:href="@{/admin/planning/delete/{id}(id=${s.id})}"
-                                        class="btn btn-sm btn-danger"
-                                        onclick="return confirm('Êtes-vous sûr ?');">Supprimer</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="calendar-card">
+                    <div id="calendar"></div>
                 </div>
             </main>
         </div>
     </div>
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var sessions = /*[[${sessions}]]*/[];
+            var groupId = /*[[${group.id}]]*/ null;
+
+            const colors = [
+                { bg: '#4361ee', border: '#3f37c9' },
+                { bg: '#7209b7', border: '#560bad' },
+                { bg: '#f72585', border: '#b5179e' },
+                { bg: '#4cc9f0', border: '#4895ef' },
+                { bg: '#2ec4b6', border: '#20a39e' },
+                { bg: '#ff9f1c', border: '#f9844a' }
+            ];
+
+            const courseColors = {};
+            let colorIdx = 0;
+
+            var events = sessions.map(function (s) {
+                const title = s.course.title;
+                if (!courseColors[title]) {
+                    courseColors[title] = colors[colorIdx % colors.length];
+                    colorIdx++;
+                }
+                return {
+                    id: s.id,
+                    title: title,
+                    start: s.startTime,
+                    end: s.endTime,
+                    backgroundColor: courseColors[title].bg,
+                    borderColor: courseColors[title].border,
+                    extendedProps: {
+                        room: s.room ? s.room.name : 'N/A',
+                        trainer: s.course.trainer || 'N/A'
+                    }
+                };
+            });
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'timeGridWeek,timeGridDay'
+                },
+                locale: 'fr',
+                slotMinTime: '08:00:00',
+                slotMaxTime: '20:00:00',
+                allDaySlot: false,
+                nowIndicator: true,
+                events: events,
+                eventClick: function (info) {
+                    if (confirm('Voulez-vous modifier cette séance ?')) {
+                        window.location.href = '/admin/groups/' + groupId + '/planning/edit/' + info.event.id;
+                    }
+                },
+                eventContent: function (arg) {
+                    let container = document.createElement('div');
+                    let title = document.createElement('div');
+                    title.classList.add('fc-event-title');
+                    title.innerText = arg.event.title;
+
+                    let room = document.createElement('div');
+                    room.classList.add('event-details');
+                    room.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${arg.event.extendedProps.room}`;
+
+                    let trainer = document.createElement('div');
+                    trainer.classList.add('event-details');
+                    trainer.innerHTML = `<i class="fas fa-user-tie"></i> ${arg.event.extendedProps.trainer}`;
+
+                    container.appendChild(title);
+                    container.appendChild(room);
+                    container.appendChild(trainer);
+                    return { domNodes: [container] };
+                }
+            });
+            calendar.render();
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

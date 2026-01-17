@@ -1,4 +1,4 @@
-package com.institut.ProjetSpringAC.controller;
+package com.institut.ProjetSpringAC.controller.web;
 
 import com.institut.ProjetSpringAC.entity.Role;
 import com.institut.ProjetSpringAC.entity.User;
@@ -28,8 +28,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public String registerUser(@ModelAttribute("user") User user) {
-        // You might want to default to STUDENT or handle role selection in the form
-        // For now, let's assume the form might provide it, or default it here if null
         if (user.getRole() == null) {
             user.setRole(Role.STUDENT);
         }

@@ -1,4 +1,4 @@
-package com.institut.ProjetSpringAC.controller;
+package com.institut.ProjetSpringAC.controller.web;
 
 import com.institut.ProjetSpringAC.entity.Session;
 import com.institut.ProjetSpringAC.service.SessionService;
@@ -30,6 +30,7 @@ public class AdminSessionController {
     @GetMapping("/new")
     public String createSessionForm(Model model) {
         model.addAttribute("academicSession", new Session());
+        model.addAttribute("academicYears", sessionService.getAcademicYears());
         return "admin/sessions/form";
     }
 
@@ -50,6 +51,7 @@ public class AdminSessionController {
         Optional<Session> session = sessionService.getSessionById(id);
         if (session.isPresent()) {
             model.addAttribute("academicSession", session.get());
+            model.addAttribute("academicYears", sessionService.getAcademicYears());
             return "admin/sessions/form";
         } else {
             return "redirect:/admin/sessions";

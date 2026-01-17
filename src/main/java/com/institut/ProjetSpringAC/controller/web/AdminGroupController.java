@@ -1,8 +1,9 @@
-package com.institut.ProjetSpringAC.controller;
+package com.institut.ProjetSpringAC.controller.web;
 
 import com.institut.ProjetSpringAC.entity.StudentGroup;
 import com.institut.ProjetSpringAC.service.StudentGroupService;
 import com.institut.ProjetSpringAC.service.SpecialtyService;
+import com.institut.ProjetSpringAC.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,11 +18,11 @@ public class AdminGroupController {
 
     private final StudentGroupService groupService;
     private final SpecialtyService specialtyService;
-    private final com.institut.ProjetSpringAC.service.SessionService sessionService;
+    private final SessionService sessionService;
 
     @Autowired
     public AdminGroupController(StudentGroupService groupService, SpecialtyService specialtyService,
-            com.institut.ProjetSpringAC.service.SessionService sessionService) {
+            SessionService sessionService) {
         this.groupService = groupService;
         this.specialtyService = specialtyService;
         this.sessionService = sessionService;

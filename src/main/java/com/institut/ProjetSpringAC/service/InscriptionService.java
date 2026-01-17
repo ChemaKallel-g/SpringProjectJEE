@@ -23,7 +23,7 @@ public class InscriptionService {
     }
 
     public Optional<Inscription> getInscriptionById(Long id) {
-        return inscriptionRepository.findById(id);
+        return inscriptionRepository.findByIdWithAssociations(id);
     }
 
     public Inscription saveInscription(Inscription inscription) {
@@ -32,5 +32,13 @@ public class InscriptionService {
 
     public void deleteInscription(Long id) {
         inscriptionRepository.deleteById(id);
+    }
+
+    public List<Inscription> getInscriptionsByStudentId(Long studentId) {
+        return inscriptionRepository.findByStudentId(studentId);
+    }
+
+    public long countPendingInscriptions() {
+        return inscriptionRepository.countByStatus(com.institut.ProjetSpringAC.entity.InscriptionStatus.PENDING);
     }
 }

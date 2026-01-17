@@ -38,6 +38,10 @@ public class Student {
     @JoinColumn(name = "group_id")
     private StudentGroup group;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public Student() {
     }
 
@@ -120,5 +124,13 @@ public class Student {
 
     public void setGroup(StudentGroup group) {
         this.group = group;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

@@ -1,4 +1,4 @@
-package com.institut.ProjetSpringAC.controller;
+package com.institut.ProjetSpringAC.controller.web;
 
 import com.institut.ProjetSpringAC.entity.Specialty;
 import com.institut.ProjetSpringAC.service.SpecialtyService;

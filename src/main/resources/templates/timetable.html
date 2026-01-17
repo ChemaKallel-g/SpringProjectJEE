@@ -2,74 +2,315 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Mon Emploi du Temps</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Emploi du Temps | Training Center</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 & Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FullCalendar CSS can be added if we want a calendar view, but let's stick to list/cards for now -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- FullCalendar CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --glass-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: #2b2d42;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            letter-spacing: -0.5px;
+        }
+
+        .main-container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .welcome-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2rem;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .welcome-info h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #1a1c2c;
+        }
+
+        .welcome-info p {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+
+        .badge-group {
+            background: #f1f3f9;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .calendar-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            border: none;
+        }
+
+        /* FullCalendar Customization */
+        .fc {
+            --fc-border-color: #edf2f7;
+            --fc-button-bg-color: #fff;
+            --fc-button-border-color: #edf2f7;
+            --fc-button-text-color: #4a5568;
+            --fc-button-active-bg-color: #f7fafc;
+            --fc-button-active-border-color: #cbd5e0;
+            --fc-today-bg-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .fc .fc-toolbar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1c2c;
+        }
+
+        .fc .fc-button-primary {
+            text-transform: capitalize;
+            font-weight: 500;
+            border-radius: 10px;
+            padding: 8px 16px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .fc .fc-button-primary:not(:disabled).fc-button-active,
+        .fc .fc-button-primary:not(:disabled):active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .fc-event {
+            border: none !important;
+            padding: 5px 10px !important;
+            border-radius: 10px !important;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .fc-event:hover {
+            transform: scale(1.02) translateY(-2px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1) !important;
+            z-index: 100 !important;
+        }
+
+        .fc-v-event .fc-event-main {
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 4px 0;
+        }
+
+        .fc-timegrid-slot {
+            height: 3.5rem !important;
+        }
+
+        .fc-theme-standard td,
+        .fc-theme-standard th {
+            border: 1px solid #f1f3f9;
+        }
+
+        .event-details {
+            font-weight: 400;
+            font-size: 0.75rem;
+            opacity: 0.85;
+            margin-top: 3px;
+            display: flex;
+            align-items: center;
+        }
+
+        .event-details i {
+            width: 14px;
+            margin-right: 6px;
+        }
+    </style>
 </head>
 
-<body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4 shadow">
-        <div class="container">
-            <a class="navbar-brand" href="/">Training Center</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="/timetable">Emploi du temps</a></li>
-                    <li class="nav-item">
-                        <form th:action="@{/logout}" method="post" class="d-inline">
-                            <button class="btn btn-link nav-link" type="submit">Déconnexion</button>
-                        </form>
-                    </li>
-                </ul>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <div class="bg-primary text-white p-2 rounded-3 me-2"
+                    style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                TRAINING CENTER
+            </a>
+            <div class="ms-auto d-flex align-items-center">
+                <a href="/home" class="btn btn-outline-secondary btn-sm rounded-pill px-3 me-2">
+                    <i class="fas fa-home me-1"></i>Accueil
+                </a>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="btn btn-danger btn-sm rounded-pill px-3 shadow-sm">
+                        <i class="fas fa-sign-out-alt me-1"></i>Déconnexion
+                    </button>
+                </form>
             </div>
         </div>
     </nav>
 
-    <div class="container">
-        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-
-        <div th:if="${student}">
-            <div class="row align-items-center mb-4">
-                <div class="col">
-                    <h2>Bonjour, <span th:text="${student.firstName}">Jean</span></h2>
-                    <p class="text-muted">
-                        Groupe: <span class="badge bg-info" th:text="${student.group?.name} ?: 'Aucun'">TP1</span> |
-                        Spécialité: <span th:text="${student.group?.specialty?.name} ?: 'Aucune'">Info</span>
-                    </p>
+    <div class="main-container">
+        <div class="welcome-card shadow-sm" th:if="${student != null}">
+            <div class="welcome-info">
+                <h1>Bonjour, <span th:text="${student.getName()}" class="text-primary">Étudiant</span> 👋</h1>
+                <p class="text-secondary">Explorez votre planning hebdomadaire et gérez votre temps efficacement.</p>
+            </div>
+            <div class="d-flex gap-4 align-items-center text-end">
+                <div class="p-3 bg-light rounded-4">
+                    <span class="text-muted small d-block mb-1 text-uppercase fw-bold letter-spacing-1">Votre
+                        Groupe</span>
+                    <span class="h5 mb-0 fw-bold" th:text="${student.group?.name}">N/A</span>
+                </div>
+                <div class="p-3 bg-light rounded-4">
+                    <span
+                        class="text-muted small d-block mb-1 text-uppercase fw-bold letter-spacing-1">Spécialité</span>
+                    <span class="h5 mb-0 fw-bold" th:text="${student.group?.specialty?.name}">N/A</span>
                 </div>
             </div>
+        </div>
 
-            <div th:if="${sessions != null and !sessions.empty}">
-                <h4 class="mb-3">Vos prochaines séances</h4>
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                    <div class="col" th:each="s : ${sessions}">
-                        <div class="card h-100 shadow-sm border-0">
-                            <div class="card-body">
-                                <h5 class="card-title text-primary" th:text="${s.course.title}"> Cours </h5>
-                                <h6 class="card-subtitle mb-2 text-muted" th:text="${s.course.code}">Code</h6>
-                                <p class="card-text">
-                                    <i class="fas fa-calendar-day me-2"></i> <strong
-                                        th:text="${#temporals.format(s.startTime, 'EEEE dd MMMM yyyy')}">Date</strong><br>
-                                    <i class="fas fa-clock me-2"></i> <span
-                                        th:text="${#temporals.format(s.startTime, 'HH:mm')} + ' - ' + ${#temporals.format(s.endTime, 'HH:mm')}">Time</span><br>
-                                    <i class="fas fa-map-marker-alt me-2"></i> Salle: <span
-                                        th:text="${s.room}">B102</span>
-                                </p>
-                            </div>
-                            <div class="card-footer bg-transparent border-t-0 text-end">
-                                <small class="text-muted">Formateur: <span
-                                        th:text="${s.course.trainer?.name}">Nom</span></small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div th:if="${sessions == null or sessions.empty}" class="alert alert-info">
-                <span th:text="${message} ?: 'Aucune séance programmée.'"></span>
-            </div>
+        <div th:if="${error}"
+            class="alert alert-danger rounded-4 border-0 shadow-sm p-3 mb-4 d-flex align-items-center">
+            <i class="fas fa-exclamation-circle me-3 fs-4"></i>
+            <span th:text="${error}"></span>
+        </div>
+
+        <div class="calendar-container border-0 mt-2">
+            <div id="calendar"></div>
         </div>
     </div>
 
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var sessions = /*[[${sessions}]]*/[];
+
+            // Professional color palette
+            const colors = [
+                { bg: '#4361ee', border: '#3f37c9' }, // Primary Blue
+                { bg: '#7209b7', border: '#560bad' }, // Purple
+                { bg: '#f72585', border: '#b5179e' }, // Pink
+                { bg: '#4cc9f0', border: '#4895ef' }, // Cyan
+                { bg: '#2ec4b6', border: '#20a39e' }, // Teal
+                { bg: '#ff9f1c', border: '#f9844a' }, // Orange
+                { bg: '#ef476f', border: '#d83a5f' }  // Red/Coral
+            ];
+
+            const courseColors = {};
+            let colorIdx = 0;
+
+            var events = sessions.map(function (s) {
+                const courseTitle = s.course.title;
+                if (!courseColors[courseTitle]) {
+                    courseColors[courseTitle] = colors[colorIdx % colors.length];
+                    colorIdx++;
+                }
+                const color = courseColors[courseTitle];
+
+                return {
+                    id: s.id,
+                    title: s.course.title,
+                    start: s.startTime,
+                    end: s.endTime,
+                    backgroundColor: color.bg,
+                    borderColor: color.border,
+                    extendedProps: {
+                        room: s.room ? s.room.name : 'N/A',
+                        trainer: s.course.trainer || 'Non assigné'
+                    }
+                };
+            });
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'timeGridWeek,timeGridDay,dayGridMonth'
+                },
+                buttonText: {
+                    today: "Aujourd'hui",
+                    month: 'Mois',
+                    week: 'Semaine',
+                    day: 'Jour'
+                },
+                locale: 'fr',
+                slotMinTime: '08:00:00',
+                slotMaxTime: '19:00:00',
+                allDaySlot: false,
+                nowIndicator: true,
+                dayMaxEvents: true,
+                events: events,
+                eventContent: function (arg) {
+                    let container = document.createElement('div');
+                    container.classList.add('fc-event-main-container');
+
+                    let title = document.createElement('div');
+                    title.classList.add('fc-event-title', 'fw-bold', 'text-truncate');
+                    title.innerText = arg.event.title;
+
+                    let room = document.createElement('div');
+                    room.classList.add('event-details');
+                    room.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${arg.event.extendedProps.room}`;
+
+                    let trainer = document.createElement('div');
+                    trainer.classList.add('event-details');
+                    trainer.innerHTML = `<i class="fas fa-user-tie"></i> ${arg.event.extendedProps.trainer}`;
+
+                    container.appendChild(title);
+                    container.appendChild(room);
+                    container.appendChild(trainer);
+                    return { domNodes: [container] };
+                }
+            });
+            calendar.render();
+        });
+    </script>
 </body>
 
 </html>

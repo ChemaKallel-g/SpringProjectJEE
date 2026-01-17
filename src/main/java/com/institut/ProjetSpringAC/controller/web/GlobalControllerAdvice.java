@@ -1,10 +1,10 @@
-package com.institut.ProjetSpringAC.controller;
+package com.institut.ProjetSpringAC.controller.web;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-@ControllerAdvice
+@ControllerAdvice(basePackages = "com.institut.ProjetSpringAC.controller.web")
 public class GlobalControllerAdvice {
 
     @ModelAttribute("currentUri")

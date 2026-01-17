@@ -2,220 +2,235 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Tableau de Bord - Admin</title>
-    <!-- Bootstrap CSS -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord | Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
         body {
-            background-color: #f4f6f9;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: #2b2d42;
         }
 
         .navbar {
-            background: linear-gradient(90deg, #1f2937, #111827) !important;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        .sidebar {
-            height: 100vh;
-            background-color: #ffffff;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
-            padding-top: 20px;
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+        }
+
+        .main-content {
+            padding: 2.5rem;
+        }
+
+        .header-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .header-section h2 {
+            font-weight: 700;
+            color: #1a1c2c;
+            margin-bottom: 0.5rem;
         }
 
         .stat-card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s;
-            border: none;
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            transition: all 0.3s ease;
             height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
         }
 
         .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            margin-bottom: 15px;
+            font-size: 20px;
+            margin-bottom: 1rem;
         }
 
-        .bg-gradient-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+        .bg-soft-primary {
+            background: rgba(67, 97, 238, 0.1);
+            color: #4361ee;
         }
 
-        .bg-gradient-success {
-            background: linear-gradient(135deg, #2af598 0%, #009efd 100%);
-            color: white;
+        .bg-soft-success {
+            background: rgba(46, 196, 182, 0.1);
+            color: #2ec4b6;
         }
 
-        .bg-gradient-warning {
-            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-            color: white;
+        .bg-soft-warning {
+            background: rgba(255, 159, 28, 0.1);
+            color: #ff9f1c;
         }
 
-        .bg-gradient-info {
-            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
-            color: white;
+        .bg-soft-info {
+            background: rgba(76, 201, 240, 0.1);
+            color: #4cc9f0;
         }
 
-        .chart-container {
+        .chart-card {
             background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            margin-top: 20px;
-            height: 400px;
-            display: flex;
-            flex-direction: column;
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            border: none;
+            margin-top: 2rem;
+        }
+
+        .btn-premium {
+            background: var(--primary-color);
+            color: white;
+            border-radius: 10px;
+            padding: 8px 20px;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-premium:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            color: white;
         }
     </style>
 </head>
 
 <body>
-
-    <nav class="navbar navbar-expand-lg navbar-dark mb-4 px-4">
-        <a class="navbar-brand fw-bold" href="/admin/dashboard">
-            <i class="fas fa-university me-2"></i>Training Center Admin
-        </a>
-        <div class="ms-auto d-flex align-items-center">
-            <span class="text-white me-3">Bienvenue, Admin</span>
-            <form th:action="@{/logout}" method="post" class="d-flex">
-                <button class="btn btn-outline-light btn-sm" type="submit">
-                    <i class="fas fa-sign-out-alt me-1"></i> Déconnexion
-                </button>
-            </form>
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="/admin/dashboard">
+                <div class="bg-primary text-white p-2 rounded-3 me-2"
+                    style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-university"></i>
+                </div>
+                ADMIN PORTAL
+            </a>
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <span class="text-muted small fw-500">Administrateur</span>
+                <form th:action="@{/logout}" method="post">
+                    <button class="btn btn-outline-danger btn-sm rounded-pill px-3" type="submit">
+                        <i class="fas fa-power-off"></i>
+                    </button>
+                </form>
+            </div>
         </div>
     </nav>
 
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
             <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-            <!-- Main Content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <div class="mt-4">
-                    <!-- Header -->
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <h2 class="fw-bold text-dark">Tableau de Bord</h2>
-                            <p class="text-muted">Aperçu général de votre établissement</p>
-                        </div>
-                        <div>
-                            <a href="#" class="btn btn-primary shadow-sm"><i
-                                    class="fas fa-download me-2"></i>Télécharger
-                                Rapport</a>
+            <main class="col-md-9 ms-sm-auto col-lg-10 main-content">
+                <div class="header-section d-flex justify-content-between align-items-end">
+                    <div>
+                        <h2 class="mb-1">Tableau de Bord</h2>
+                        <p class="text-muted mb-0">Vue d'ensemble et statistiques de l'établissement</p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div>
+                                <div class="stat-icon bg-soft-primary"><i class="fas fa-user-graduate"></i></div>
+                                <h6 class="text-muted small text-uppercase mb-1 fw-bold">Étudiants</h6>
+                                <h2 class="fw-bold mb-0" th:text="${studentCount}">0</h2>
+                            </div>
+                            <a href="/admin/students"
+                                class="btn btn-link text-primary p-0 text-decoration-none mt-3">Gérer <i
+                                    class="fas fa-chevron-right small ms-1"></i></a>
                         </div>
                     </div>
-
-                    <!-- Stats Row -->
-                    <div class="row g-4 mb-4">
-                        <!-- Students -->
-                        <div class="col-md-3">
-                            <div class="stat-card">
-                                <div class="stat-icon bg-gradient-primary">
-                                    <i class="fas fa-user-graduate"></i>
-                                </div>
-                                <h6 class="text-muted text-uppercase mb-1">Étudiants</h6>
-                                <h3 class="fw-bold mb-3" th:text="${studentCount}">0</h3>
-                                <a href="/admin/students" class="btn btn-sm btn-outline-primary w-100">Gérer</a>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div>
+                                <div class="stat-icon bg-soft-success"><i class="fas fa-chalkboard-teacher"></i></div>
+                                <h6 class="text-muted small text-uppercase mb-1 fw-bold">Formateurs</h6>
+                                <h2 class="fw-bold mb-0" th:text="${trainerCount}">0</h2>
                             </div>
-                        </div>
-                        <!-- Trainers -->
-                        <div class="col-md-3">
-                            <div class="stat-card">
-                                <div class="stat-icon bg-gradient-success">
-                                    <i class="fas fa-chalkboard-teacher"></i>
-                                </div>
-                                <h6 class="text-muted text-uppercase mb-1">Formateurs</h6>
-                                <h3 class="fw-bold mb-3" th:text="${trainerCount}">0</h3>
-                                <a href="/admin/trainers" class="btn btn-sm btn-outline-success w-100">Gérer</a>
-                            </div>
-                        </div>
-                        <!-- Courses -->
-                        <div class="col-md-3">
-                            <div class="stat-card">
-                                <div class="stat-icon bg-gradient-warning">
-                                    <i class="fas fa-book-open"></i>
-                                </div>
-                                <h6 class="text-muted text-uppercase mb-1">Cours</h6>
-                                <h3 class="fw-bold mb-3" th:text="${courseCount}">0</h3>
-                                <a href="/admin/courses" class="btn btn-sm btn-outline-warning w-100">Gérer</a>
-                            </div>
-                        </div>
-                        <!-- Inscriptions -->
-                        <div class="col-md-3">
-                            <div class="stat-card">
-                                <div class="stat-icon bg-gradient-info">
-                                    <i class="fas fa-file-signature"></i>
-                                </div>
-                                <h6 class="text-muted text-uppercase mb-1">Inscriptions</h6>
-                                <h3 class="fw-bold mb-3" th:text="${inscriptionCount}">0</h3>
-                                <a href="/admin/inscriptions" class="btn btn-sm btn-outline-info w-100">Gérer</a>
-                            </div>
-                        </div>
-                        <!-- New Cards -->
-                        <div class="col-md-3">
-                            <div class="stat-card">
-                                <div class="stat-icon bg-gradient-primary">
-                                    <i class="fas fa-tags"></i>
-                                </div>
-                                <h6 class="text-muted text-uppercase mb-1">Spécialités</h6>
-                                <h3 class="fw-bold mb-3" th:text="${specialtyCount}">0</h3>
-                                <a href="/admin/specialties" class="btn btn-sm btn-outline-primary w-100">Gérer</a>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="stat-card">
-                                <div class="stat-icon bg-gradient-secondary">
-                                    <i class="fas fa-calendar-alt"></i>
-                                </div>
-                                <h6 class="text-muted text-uppercase mb-1">Sessions</h6>
-                                <h3 class="fw-bold mb-3" th:text="${sessionCount}">0</h3>
-                                <a href="/admin/sessions" class="btn btn-sm btn-outline-secondary w-100">Gérer</a>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="stat-card">
-                                <div class="stat-icon bg-dark text-white">
-                                    <i class="fas fa-users-cog"></i>
-                                </div>
-                                <h6 class="text-muted text-uppercase mb-1">Groupes</h6>
-                                <h3 class="fw-bold mb-3" th:text="${groupCount}">0</h3>
-                                <a href="/admin/groups" class="btn btn-sm btn-outline-dark w-100">Gérer</a>
-                            </div>
+                            <a href="/admin/trainers"
+                                class="btn btn-link text-success p-0 text-decoration-none mt-3">Gérer <i
+                                    class="fas fa-chevron-right small ms-1"></i></a>
                         </div>
                     </div>
-
-                    <!-- Charts Row -->
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <div class="chart-container">
-                                <h5 class="mb-4 fw-bold">Étudiants par Cours</h5>
-                                <canvas id="courseChart"></canvas>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div>
+                                <div class="stat-icon bg-soft-warning"><i class="fas fa-book-open"></i></div>
+                                <h6 class="text-muted small text-uppercase mb-1 fw-bold">Cours</h6>
+                                <h2 class="fw-bold mb-0" th:text="${courseCount}">0</h2>
                             </div>
+                            <a href="/admin/courses"
+                                class="btn btn-link text-warning p-0 text-decoration-none mt-3">Gérer <i
+                                    class="fas fa-chevron-right small ms-1"></i></a>
                         </div>
-                        <div class="col-md-6">
-                            <div class="chart-container">
-                                <h5 class="mb-4 fw-bold">Répartition (Secteurs)</h5>
-                                <canvas id="pieChart"></canvas>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card position-relative">
+                            <span th:if="${pendingInscriptionCount > 0}"
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm"
+                                style="z-index: 10;">
+                                <span th:text="${pendingInscriptionCount}">0</span>
+                                <span class="visually-hidden">demandes en attente</span>
+                            </span>
+                            <div>
+                                <div class="stat-icon bg-soft-info"><i class="fas fa-file-signature"></i></div>
+                                <h6 class="text-muted small text-uppercase mb-1 fw-bold">Inscriptions</h6>
+                                <h2 class="fw-bold mb-0" th:text="${inscriptionCount}">0</h2>
                             </div>
+                            <a href="/admin/inscriptions" class="btn btn-link text-info p-0 text-decoration-none mt-3">
+                                <span
+                                    th:text="${pendingInscriptionCount > 0} ? 'Voir les demandes (' + ${pendingInscriptionCount} + ')' : 'Gérer'">Gérer</span>
+                                <i class="fas fa-chevron-right small ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mt-1">
+                    <div class="col-md-6">
+                        <div class="chart-card">
+                            <h5 class="fw-bold mb-4">Étudiants par Cours</h5>
+                            <div style="height: 300px;"><canvas id="courseChart"></canvas></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-card">
+                            <h5 class="fw-bold mb-4">Cours par Spécialité</h5>
+                            <div style="height: 300px;"><canvas id="pieChart"></canvas></div>
                         </div>
                     </div>
                 </div>
@@ -223,58 +238,25 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script th:inline="javascript">
-        /*<![CDATA[*/
         var courseNames = /*[[${courseNames}]]*/[];
         var studentsPerCourse = /*[[${studentsPerCourse}]]*/[];
-        var avgGrades = /*[[${avgGrades}]]*/[];
+        var specialtyLabels = /*[[${specialtyLabels}]]*/[];
+        var coursesPerSpecialtyData = /*[[${coursesPerSpecialtyData}]]*/[];
 
-        // Doughnut Chart: Students per Course
         const ctx = document.getElementById('courseChart').getContext('2d');
         new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: courseNames,
-                datasets: [
-                    {
-                        label: 'Étudiants inscrits',
-                        data: studentsPerCourse,
-                        backgroundColor: generateColors(courseNames.length),
-                        borderWidth: 1
-                    }
-                ]
+                datasets: [{
+                    data: studentsPerCourse,
+                    backgroundColor: ['#4361ee', '#3f37c9', '#4895ef', '#4cc9f0', '#4895ef', '#560bad'],
+                    hoverOffset: 4
+                }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    },
-                    title: {
-                        display: true,
-                        text: 'Nombre d\'étudiants par cours'
-                    }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
         });
-
-        // Pie Chart: Courses per Specialty
-        var specialtyLabels = /*[[${specialtyLabels}]]*/[];
-        var coursesPerSpecialtyData = /*[[${coursesPerSpecialtyData}]]*/[];
-
-        // Generate random colors
-        function generateColors(count) {
-            var colors = [];
-            for (var i = 0; i < count; i++) {
-                var r = Math.floor(Math.random() * 255);
-                var g = Math.floor(Math.random() * 255);
-                var b = Math.floor(Math.random() * 255);
-                colors.push('rgba(' + r + ', ' + g + ', ' + b + ', 0.7)');
-            }
-            return colors;
-        }
 
         const pieCtx = document.getElementById('pieChart').getContext('2d');
         new Chart(pieCtx, {
@@ -283,25 +265,11 @@
                 labels: specialtyLabels,
                 datasets: [{
                     data: coursesPerSpecialtyData,
-                    backgroundColor: generateColors(specialtyLabels.length),
-                    borderWidth: 1
+                    backgroundColor: ['#2ec4b6', '#ff9f1c', '#e71d36', '#011627', '#fdfffc'],
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom'
-                    },
-                    title: {
-                        display: true,
-                        text: 'Répartition des cours par spécialité'
-                    }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
         });
-        /*]]>*/
     </script>
 </body>
 
